@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: Pipeline Execution API
+  version: 1.0.0
+  description: API for executing data processing pipelines
+
+servers:
+  - url: https://civicdata.onrender.com/api/v1
+paths:
+  /pipeline/execute:
+    post:
+      summary: Execute pipeline
+      description: Execute a data processing pipeline on a CSV file
+      operationId: executePipeline
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                csvFile:
+                  type: string
+                  format: binary
+                pipelineConfig:
+                  type: array
+                  example: |
+                    [
+                      {
+                        "name": "invalidDateFormat",
+                        "config": {
+                          "columns": ["Join_Date", "Last_Login"]
+                        }
+                      },
+                      {
+                        "name": "missingValues",
+                        "config": {
+                          "columns": ["ID", "Name", "Age", "Gender", "Email", "Join_Date", "Last_Login"],
+                          "threshold": 5
+                        }
+                      },
+                      {
+                        "name": "duplicateRows",
+                        "config": {
+                          "columns": ["ID", "Name", "Email"]
+                        }
+                      },
+                      {
+                        "name": "extraCategoricalVariable",
+                        "config": {
+                          "columns": ["Gender"],
+                          "categories":["M", "F"]
+                        }
+                      }
+                    ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Pipeline executed successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request parameters
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An unexpected error occurred
