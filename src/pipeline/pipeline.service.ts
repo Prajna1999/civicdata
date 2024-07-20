@@ -17,7 +17,7 @@ export class PipelineService {
 
     constructor(private csvParserService:CsvParserService){}
 
-    async executePipeline(csvContent:string, pipelineConfig:any[]):Promise<TaskResult[]>{
+    async executePipeline(csvContent:string, pipelineConfig:any[]):Promise<{message:string; results:TaskResult[]}>{
         const parsedData=await this.csvParserService.parse(csvContent);
 
         const results:TaskResult[]=[];
@@ -35,7 +35,10 @@ export class PipelineService {
             results.push(result);
         
     }
-    return results;
+    return {
+        message:'Pipeline Executed Successfully',
+        results
+    };
 
 }
     registerTask(name:string, taskClass:new ()=>Task){

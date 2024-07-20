@@ -1,88 +1,402 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# NestJS Docker Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This README provides instructions for building and running the NestJS application using Docker, with additional notes for WSL2 users.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Prerequisites
 
-## Description
+- Docker installed on your system
+- For Windows users: Docker Desktop with WSL2 backend configured
+- Git (optional, for cloning the repository)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Getting Started
 
-## Installation
+1. Clone the repository (if you haven't already):
+   ```
+   git clone https://github.com/Prajna1999/civicdata.git
+   cd civicdata
+   ```
 
-```bash
-$ npm install
+2. Ensure you're in the project root directory, which should contain the `Dockerfile`.
+
+## Building the Docker Image
+
+To build the Docker image for the NestJS application, run the following command:
+
+```
+docker build -t civicdata .
 ```
 
-## Running the app
+This command builds a Docker image named `my-nestjs-app` based on the instructions in the `Dockerfile`.
 
-```bash
-# development
-$ npm run start
+## Running the Container
 
-# watch mode
-$ npm run start:dev
+To run the container based on the image you just built:
 
-# production mode
-$ npm run start:prod
+```
+docker run -p 8080:8080 civicdata
 ```
 
-## Test
+This command starts a container from the `civicdata` image and maps port 8080 from the container to port 8080 on your host machine.
 
-```bash
-# unit tests
-$ npm run test
+## Accessing the Application
 
-# e2e tests
-$ npm run test:e2e
+Once the container is running, you can access the NestJS application by opening a web browser and navigating to:
 
-# test coverage
-$ npm run test:cov
+```
+http://localhost:8080
 ```
 
-## Support
+## Stopping the Container
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+To stop the running container:
 
-## Stay in touch
+1. Find the container ID:
+   ```
+   docker ps
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+2. Stop the container:
+   ```
+   docker stop <container-id>
+   ```
 
-## License
+Alternatively, you can stop the container using this single command:
+```
+docker stop $(docker ps -q --filter ancestor=civicdata)
+```
 
-Nest is [MIT licensed](LICENSE).
+## Notes for WSL2 Users
+
+If you're using WSL2 on Windows:
+
+1. Ensure Docker Desktop is running and configured to use the WSL2 backend.
+2. Run all Docker commands from your WSL2 terminal.
+3. Keep your project files in the Linux file system (e.g., `/home/<your-username>/projects/`) for better performance.
+4. You can access the application on `localhost` from your Windows host as WSL2 handles port forwarding automatically.
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Ensure Docker is running on your system.
+2. Check that you're in the correct directory containing the `Dockerfile`.
+3. For WSL2 users, make sure you're working in your WSL2 distribution.
+4. Verify that port 8080 is not being used by another application.
 
 
-## Third task
 
-Category are badly chosen. In the Gender column, the values permitted should be Male, Female or M and F. Not both. In the given dataset, although most of the gender seems to be properly assigned, there seems to be some fields where Male, Female gender are explicitly added.
+# Pipeline Execution API Documentation
 
-Categorical Values in 'Gender' column. Here Gender.
+## Overview
 
-Identify categorical values other than the required 'M' or 'F', in any given column.
+The Pipeline Execution API allows you to execute data processing pipelines on a CSV file. This API accepts a CSV file and a configuration for the data processing pipeline, then processes the data according to the specified pipeline.
 
-Log those particular rows, where the categorical values are mis-added.
+## Base URL
 
-## Fourth Task:
+`https://civicdata.onrender.com/api/v1`
 
-Date values should be homogenous in the Join Date and Last Login Columns.
+## Endpoints
+
+### Execute Pipeline
+
+#### POST `/pipeline/execute`
+
+This endpoint executes a data processing pipeline on a provided CSV file based on the specified configuration.
+
+**Summary:**
+- Execute a data processing pipeline on a CSV file.
+
+**Description:**
+- This endpoint processes the provided CSV file using the configurations defined in the `pipelineConfig`.
+
+#### Request Body
+
+The request body should be in `multipart/form-data` format and must include the following fields:
+
+| Field          | Type          | Format   | Description                                                                                  |
+|----------------|---------------|----------|----------------------------------------------------------------------------------------------|
+| `csvFile`      | string        | binary   | The CSV file to be processed.                                                                |
+| `pipelineConfig` | array of objects | JSON    | The configuration for the data processing pipeline. Each object in the array defines a pipeline step. |
+
+**Example `pipelineConfig`:**
+
+```json
+[
+  {
+    "name": "invalidDateFormat",
+    "config": {
+      "columns": ["Join_Date", "Last_Login"]
+    }
+  },
+  {
+    "name": "missingValues",
+    "config": {
+      "columns": ["ID", "Name", "Age", "Gender", "Email", "Join_Date", "Last_Login"],
+      "threshold": 5
+    }
+  },
+  {
+    "name": "duplicateRows",
+    "config": {
+      "columns": ["ID", "Name", "Email"]
+    }
+  },
+  {
+    "name": "extraCategoricalVariable",
+    "config": {
+      "columns": ["Gender"],
+      "categories":["M", "F"]
+    }
+  }
+]
+
+# Response
+
+## Successful Pipeline Execution Response
+
+When a pipeline is executed successfully, the API returns a response with detailed results for each task specified in the pipelineConfig. Below is the structure and explanation of the response body.
+
+### Response Body Structure
+
+```json
+{
+  "message": "Pipeline Executed Successfully",
+  "results": [
+    {
+      "taskName": "Invalid Date Format Task",
+      "result": {
+        "Join_Date": {
+          "count": 3,
+          "invalidDates": [
+            {
+              "value": "1/25/2022",
+              "row": 45
+            },
+            {
+              "value": "1/30/2022",
+              "row": 46
+            },
+            {
+              "value": "2/5/2022",
+              "row": 47
+            }
+          ]
+        },
+        "Last_Login": {
+          "count": 2,
+          "invalidDates": [
+            {
+              "value": "2/5/2022",
+              "row": 90
+            },
+            {
+              "value": "2/10/2022",
+              "row": 91
+            }
+          ]
+        }
+      },
+      "logs": [
+        "Found invalid date formats in 2 column(s)"
+      ]
+    },
+    {
+      "taskName": "Missing Values Task",
+      "result": {
+        "ID": 1.9607843137254901,
+        "Name": 2.941176470588235,
+        "Age": 1.9607843137254901,
+        "Gender": 0,
+        "Email": 3.9215686274509802,
+        "Join_Date": 0,
+        "Last_Login": 0
+      },
+      "logs": []
+    },
+    {
+      "taskName": "Duplicate Rows Task",
+      "result": {
+        "duplicateCount": 2,
+        "duplicates": {
+          "8|Jane Smith|jane.smith@email.com": 2,
+          "21|Grace Lee|grace.lee@email.com": 2
+        }
+      },
+      "logs": [
+        "Found 2 duplicate rows based on specified columns."
+      ]
+    },
+    {
+      "taskName": "Extra Categorical Variables Task",
+      "result": {
+        "Gender": {
+          "count": 4,
+          "values": [
+            "Male",
+            "Female",
+            "female",
+            "FEMALE"
+          ]
+        }
+      },
+      "logs": [
+        "Extra category \"Male\" found in column \"Gender\" at row 3",
+        "Extra category \"Female\" found in column \"Gender\" at row 4",
+        "Extra category \"female\" found in column \"Gender\" at row 6",
+        "Extra category \"Male\" found in column \"Gender\" at row 10",
+        "Extra category \"FEMALE\" found in column \"Gender\" at row 12",
+        "Extra category \"Male\" found in column \"Gender\" at row 17",
+        "Extra category \"Female\" found in column \"Gender\" at row 20",
+        "Extra category \"Male\" found in column \"Gender\" at row 35",
+        "Found 4 extra categorical variables across all specified columns."
+      ]
+    }
+  ]
+}
+```
+
+### Response Fields
+
+- `message`: A string indicating the success of the pipeline execution.
+- `results`: An array of objects, each representing the result of a task specified in the pipelineConfig.
+
+### Task Result Fields
+
+Each task result object contains the following fields:
+
+- `taskName`: The name of the task executed.
+- `result`: An object with task-specific results.
+- `logs`: An array of log messages providing additional context about the task execution.
+
+### Task-specific Results
+
+#### Invalid Date Format Task
+
+`result`: An object where each key is a column name and each value is an object with:
+- `count`: The number of invalid dates found in the column.
+- `invalidDates`: An array of objects representing the invalid date values and their respective row numbers.
+
+Example:
+
+```json
+{
+  "taskName": "Invalid Date Format Task",
+  "result": {
+    "Join_Date": {
+      "count": 3,
+      "invalidDates": [
+        {
+          "value": "1/25/2022",
+          "row": 45
+        },
+        {
+          "value": "1/30/2022",
+          "row": 46
+        },
+        {
+          "value": "2/5/2022",
+          "row": 47
+        }
+      ]
+    },
+    "Last_Login": {
+      "count": 2,
+      "invalidDates": [
+        {
+          "value": "2/5/2022",
+          "row": 90
+        },
+        {
+          "value": "2/10/2022",
+          "row": 91
+        }
+      ]
+    }
+  },
+  "logs": [
+    "Found invalid date formats in 2 column(s)"
+  ]
+}
+```
+
+#### Missing Values Task
+
+`result`: An object where each key is a column name and each value is the percentage of missing values in that column.
+
+Example:
+
+```json
+{
+  "taskName": "Missing Values Task",
+  "result": {
+    "ID": 1.9607843137254901,
+    "Name": 2.941176470588235,
+    "Age": 1.9607843137254901,
+    "Gender": 0,
+    "Email": 3.9215686274509802,
+    "Join_Date": 0,
+    "Last_Login": 0
+  },
+  "logs": []
+}
+```
+
+#### Duplicate Rows Task
+
+`result`: An object containing:
+- `duplicateCount`: The total number of duplicate rows found.
+- `duplicates`: An object where each key is a concatenated string of values from the specified columns, and each value is the number of occurrences of that duplicate row.
+
+Example:
+
+```json
+{
+  "taskName": "Duplicate Rows Task",
+  "result": {
+    "duplicateCount": 2,
+    "duplicates": {
+      "8|Jane Smith|jane.smith@email.com": 2,
+      "21|Grace Lee|grace.lee@email.com": 2
+    }
+  },
+  "logs": [
+    "Found 2 duplicate rows based on specified columns."
+  ]
+}
+```
+
+#### Extra Categorical Variables Task
+
+`result`: An object where each key is a column name and each value is an object with:
+- `count`: The number of extra categorical values found.
+- `values`: An array of the extra categorical values found.
+
+Example:
+
+```json
+{
+  "taskName": "Extra Categorical Variables Task",
+  "result": {
+    "Gender": {
+      "count": 4,
+      "values": [
+        "Male",
+        "Female",
+        "female",
+        "FEMALE"
+      ]
+    }
+  },
+  "logs": [
+    "Extra category \"Male\" found in column \"Gender\" at row 3",
+    "Extra category \"Female\" found in column \"Gender\" at row 4",
+    "Extra category \"female\" found in column \"Gender\" at row 6",
+    "Extra category \"Male\" found in column \"Gender\" at row 10",
+    "Extra category \"FEMALE\" found in column \"Gender\" at row 12",
+    "Extra category \"Male\" found in column \"Gender\" at row 17",
+    "Extra category \"Female\" found in column \"Gender\" at row 20",
+    "Extra category \"Male\" found in column \"Gender\" at row 35",
+    "Found 4 extra categorical variables across all specified columns."
+  ]
+}
+```
