@@ -1,4 +1,4 @@
-# NestJS Docker Application
+# Data pipeline Docker Application
 
 This README provides instructions for building and running the NestJS application using Docker, with additional notes for WSL2 users.
 
