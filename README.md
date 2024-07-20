@@ -26,7 +26,7 @@ To build the Docker image for the NestJS application, run the following command:
 docker build -t civicdata .
 ```
 
-This command builds a Docker image named `my-nestjs-app` based on the instructions in the `Dockerfile`.
+This command builds a Docker image named `civicdata` based on the instructions in the `Dockerfile`.
 
 ## Running the Container
 
